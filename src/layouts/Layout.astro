@@ -1,0 +1,128 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals." />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header class="main-header container animate-fade">
+			<a href="/" class="logo">
+				<span class="logo-emoji">🧊</span>
+				<span class="logo-text">In<span class="text-gradient">Fridge</span></span>
+			</a>
+			<nav class="main-nav">
+				<a href="/" class="nav-link">Calculator</a>
+				<a href="/guide" class="nav-link">Kitchen Guide</a>
+				<a href="/vitamins" class="nav-link">Vitamins & Minerals</a>
+				<a href="/guidelines" class="nav-link">Portions & Rules</a>
+			</nav>
+		</header>
+        
+		<main class="container">
+			<slot />
+		</main>
+
+		<footer class="container main-footer">
+			<p>
+				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS guidelines. 
+				<br/>
+				Consult with a medical professional before starting any restrictive diet.
+			</p>
+		</footer>
+	</body>
+</html>
+
+<style>
+	.main-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-top: 2rem;
+		padding-bottom: 2rem;
+        margin-bottom: 2rem;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+        text-decoration: none;
+        color: var(--text);
+		font-size: 1.5rem;
+		font-weight: 800;
+        transition: var(--transition);
+	}
+    
+    .logo:hover {
+        opacity: 0.8;
+    }
+
+	.logo-emoji {
+		background: var(--glass-bg);
+		padding: 0.5rem;
+		border-radius: 12px;
+		border: 1px solid var(--glass-border);
+	}
+
+	.logo-text {
+		letter-spacing: -0.05em;
+	}
+
+    .main-nav {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+
+    .nav-link:hover {
+        color: var(--primary);
+    }
+    
+    .main-footer {
+        text-align: center; 
+        margin-top: 4rem; 
+        padding-bottom: 4rem; 
+        border-top: 1px solid var(--glass-border);
+        padding-top: 2rem;
+    }
+    
+    .main-footer p {
+        color: var(--text-muted); 
+        font-size: 0.9rem;
+    }
+
+	@media (max-width: 600px) {
+		.main-header {
+			flex-direction: column;
+			gap: 1.5rem;
+			text-align: center;
+		}
+        
+        .main-nav {
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+	}
+</style>
