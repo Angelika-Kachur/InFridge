@@ -4,7 +4,7 @@
 <section class="guidelines animate-fade" style="animation-delay: 0.1s;">
   <div class="glass-card">
     <h2 class="text-gradient">Official Guidelines & Recommendations</h2>
-    
+
     <div class="guideline-content">
       <div class="source-block">
         <h3>🇺🇸 USA Dietary Guidelines (2020-2025)</h3>
@@ -32,8 +32,8 @@
     </div>
 
     <div class="portions-guide">
-      <h3 class="text-gradient" style="margin-bottom: 1.5rem; margin-top: 3rem;">What is a Portion? (Cheat Sheet)</h3>
-      <div class="portions-grid">
+      <h3 class="text-gradient" style="margin-bottom: 2rem; margin-top: 3rem;">What is a Portion? (Cheat Sheet)</h3>
+      <div class="auto-grid portions-grid">
         <div class="portion-item">
           <span class="emoji" role="img" aria-label="Fresh Fruit and Vegetables">🍎</span>
           <div class="text">
@@ -91,7 +91,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 3rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
   }
 
   .source-block h3 {
@@ -113,8 +113,8 @@
 
   .source-block li {
     margin-bottom: 0.8rem;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 0.8rem 1rem;
+    background: var(--card-subtle-bg);
     border-radius: 10px;
     font-size: 0.9rem;
   }
@@ -123,7 +123,7 @@
     color: var(--secondary);
   }
 
-  /* Portions Guide Styles */
+  /* Portions Guide */
   .portions-guide {
     margin-top: 2rem;
     padding-top: 2rem;
@@ -131,7 +131,6 @@
   }
 
   .portions-grid {
-    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
@@ -140,27 +139,28 @@
     display: flex;
     align-items: flex-start;
     gap: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 1.2rem;
+    background: var(--card-subtle-bg);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
   }
 
   .portion-item .emoji {
     font-size: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-subtle-bg);
     padding: 0.5rem;
     border-radius: 8px;
+    flex-shrink: 0;
   }
 
   .portion-item .text {
     display: flex;
     flex-direction: column;
+    gap: 0.3rem;
   }
 
   .portion-item .text strong {
     font-size: 0.95rem;
-    margin-bottom: 0.2rem;
     color: var(--text);
   }
 

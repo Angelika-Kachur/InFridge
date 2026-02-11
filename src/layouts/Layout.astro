@@ -18,20 +18,46 @@ const currentPath = Astro.url.pathname;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<script is:inline>
+			(function() {
+				const saved = localStorage.getItem('theme');
+				if (saved) {
+					document.documentElement.setAttribute('data-theme', saved);
+				}
+			})();
+		</script>
 	</head>
 	<body>
 		<a href="#main-content" class="sr-only">Skip to main content</a>
 		<header class="main-header container animate-fade">
-			<a href="/" class="logo">
-				<span class="logo-emoji" role="img" aria-label="Ice cube">🧊</span>
+			<a href="/" class="logo" aria-label="InFridge home">
+				<svg class="logo-icon" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+					<rect x="28" y="8" width="72" height="112" rx="10" stroke="currentColor" stroke-width="6"/>
+					<line x1="28" y1="48" x2="100" y2="48" stroke="currentColor" stroke-width="4"/>
+					<line x1="82" y1="28" x2="82" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+					<line x1="82" y1="60" x2="82" y2="80" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+					<circle cx="52" cy="30" r="6" fill="currentColor" opacity="0.3"/>
+					<circle cx="48" cy="70" r="5" fill="currentColor" opacity="0.3"/>
+					<circle cx="62" cy="74" r="5" fill="currentColor" opacity="0.3"/>
+				</svg>
 				<span class="logo-text">In<span class="text-gradient">Fridge</span></span>
 			</a>
+
 			<nav class="main-nav" aria-label="Main navigation">
 				<a href="/" class="nav-link" aria-current={currentPath === '/' ? 'page' : undefined}>Calculator</a>
 				<a href="/guide" class="nav-link" aria-current={currentPath === '/guide/' ? 'page' : undefined}>Kitchen Guide</a>
 				<a href="/vitamins" class="nav-link" aria-current={currentPath === '/vitamins/' ? 'page' : undefined}>Vitamins & Minerals</a>
 				<a href="/guidelines" class="nav-link" aria-current={currentPath === '/guidelines/' ? 'page' : undefined}>Portions & Rules</a>
 			</nav>
+
+			<button
+				id="theme-toggle"
+				class="theme-toggle"
+				type="button"
+				aria-label="Toggle dark mode"
+			>
+				<span class="theme-toggle-icon" aria-hidden="true"></span>
+			</button>
 		</header>
 
 		<main id="main-content" class="container">
@@ -40,11 +66,35 @@ const currentPath = Astro.url.pathname;
 
 		<footer class="container main-footer">
 			<p>
-				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS guidelines. 
+				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS guidelines.
 				<br/>
 				Consult with a medical professional before starting any restrictive diet.
 			</p>
 		</footer>
+
+		<script is:inline>
+			(function() {
+				var btn = document.getElementById('theme-toggle');
+				function getEffectiveTheme() {
+					var saved = localStorage.getItem('theme');
+					if (saved) return saved;
+					return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				function updateIcon() {
+					var isDark = getEffectiveTheme() === 'dark';
+					btn.querySelector('.theme-toggle-icon').textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+					btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+				}
+				btn.addEventListener('click', function() {
+					var current = getEffectiveTheme();
+					var next = current === 'dark' ? 'light' : 'dark';
+					document.documentElement.setAttribute('data-theme', next);
+					localStorage.setItem('theme', next);
+					updateIcon();
+				});
+				updateIcon();
+			})();
+		</script>
 	</body>
 </html>
 
@@ -55,77 +105,115 @@ const currentPath = Astro.url.pathname;
 		align-items: center;
 		padding-top: 2rem;
 		padding-bottom: 2rem;
-        margin-bottom: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	.logo {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
-        text-decoration: none;
-        color: var(--text);
-		font-size: 1.5rem;
+		gap: 0.6rem;
+		text-decoration: none;
+		color: var(--text);
+		font-size: 1.4rem;
 		font-weight: 800;
-        transition: var(--transition);
+		transition: var(--transition);
+		flex-shrink: 0;
 	}
-    
-    .logo:hover {
-        opacity: 0.8;
-    }
 
-	.logo-emoji {
-		background: var(--glass-bg);
-		padding: 0.5rem;
-		border-radius: 12px;
-		border: 1px solid var(--glass-border);
+	.logo:hover {
+		opacity: 0.8;
+	}
+
+	.logo-icon {
+		width: 32px;
+		height: 32px;
+		color: var(--primary);
 	}
 
 	.logo-text {
 		letter-spacing: -0.05em;
 	}
 
-    .main-nav {
-        display: flex;
-        gap: 2rem;
-    }
+	.main-nav {
+		display: flex;
+		gap: 1.8rem;
+		align-items: center;
+	}
 
-    .nav-link {
-        color: var(--text-muted);
-        text-decoration: none;
-        font-weight: 500;
-        transition: var(--transition);
-        font-size: 0.95rem;
-    }
+	.nav-link {
+		color: var(--text-muted);
+		text-decoration: none;
+		font-weight: 500;
+		transition: var(--transition);
+		font-size: 0.9rem;
+		white-space: nowrap;
+	}
 
-    .nav-link:hover,
-    .nav-link[aria-current="page"] {
-        color: var(--primary);
-    }
-    
-    .main-footer {
-        text-align: center; 
-        margin-top: 4rem; 
-        padding-bottom: 4rem; 
-        border-top: 1px solid var(--glass-border);
-        padding-top: 2rem;
-    }
-    
-    .main-footer p {
-        color: var(--text-muted); 
-        font-size: 0.9rem;
-    }
+	.nav-link:hover,
+	.nav-link[aria-current="page"] {
+		color: var(--primary);
+	}
 
-	@media (max-width: 600px) {
+	.theme-toggle {
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		border-radius: 10px;
+		width: 38px;
+		height: 38px;
+		cursor: pointer;
+		transition: var(--transition);
+		font-size: 1.1rem;
+		line-height: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.theme-toggle:hover {
+		border-color: var(--primary);
+		background: var(--card-hover-bg);
+	}
+
+	.theme-toggle:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 2px;
+	}
+
+	.main-footer {
+		text-align: center;
+		margin-top: 5rem;
+		padding-bottom: 4rem;
+		border-top: 1px solid var(--glass-border);
+		padding-top: 2rem;
+	}
+
+	.main-footer p {
+		color: var(--text-muted);
+		font-size: 0.9rem;
+	}
+
+	@media (max-width: 768px) {
 		.main-header {
-			flex-direction: column;
-			gap: 1.5rem;
-			text-align: center;
+			flex-wrap: wrap;
+			gap: 1rem;
 		}
-        
-        .main-nav {
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+
+		.logo {
+			order: 1;
+		}
+
+		.theme-toggle {
+			order: 2;
+			margin-left: auto;
+		}
+
+		.main-nav {
+			order: 3;
+			width: 100%;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
 	}
 </style>
