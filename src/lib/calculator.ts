@@ -78,7 +78,7 @@ export function getGoalInfoHtml(goal: Goal): string {
 export function getGoalExtraMissionsHtml(goal: Goal): string {
   if (goal === "sugar") {
     return `
-      <div class="mission-card" style="border-color: var(--accent);">
+      <div class="mission-card mission-sugar">
         <div class="mission-icon" role="img" aria-label="No sugary drinks">🚫</div>
         <div class="mission-details">
           <h4>No sugary drinks</h4>
