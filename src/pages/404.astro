@@ -1,0 +1,115 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="404 - Not Found | InFridge">
+    <div class="error-container">
+        <div class="glass-card animate-fade error-content">
+            <div class="emoji-404" role="img" aria-label="Empty fridge">🧊</div>
+            <h1 class="text-gradient">404</h1>
+            <h2>Nothing in the Fridge!</h2>
+            <p>
+                Oops! The page you're looking for seems to have expired or moved
+                to another shelf.
+            </p>
+            <div class="actions">
+                <a href="/" class="btn-primary">Return to Calculator</a>
+                <a href="/guide" class="btn-secondary">Check Guidelines</a>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .error-container {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .error-content {
+        max-width: 500px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 3rem 2rem;
+    }
+
+    .emoji-404 {
+        font-size: 5rem;
+        margin-bottom: 0.5rem;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    h1 {
+        font-size: 4rem;
+        line-height: 1;
+        margin: 0;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        color: var(--text);
+        margin: 0;
+    }
+
+    p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--glass-border);
+        color: var(--text);
+        padding: 0.8rem 1.6rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--primary);
+        background: var(--card-subtle-bg);
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-10px) rotate(5deg);
+        }
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+            display: flex;
+        }
+    }
+</style>
