@@ -53,15 +53,18 @@ import Layout from "../layouts/Layout.astro";
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 2rem;
         color: var(--text);
         margin: 0;
+        font-weight: 700;
     }
 
     p {
         color: var(--text-muted);
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        max-width: 600px;
     }
 
     .actions {
@@ -71,11 +74,16 @@ import Layout from "../layouts/Layout.astro";
         justify-content: center;
     }
 
+    .actions .btn-primary,
+    .btn-secondary {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+    }
+
     .btn-secondary {
         background: transparent;
         border: 2px solid var(--glass-border);
         color: var(--text);
-        padding: 0.8rem 1.6rem;
         border-radius: 12px;
         font-weight: 600;
         text-decoration: none;

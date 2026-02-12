@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
 	title: string;
@@ -9,20 +9,23 @@ const { title } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals." />
+		<meta
+			name="description"
+			content="Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals."
+		/>
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<script is:inline>
-			(function() {
-				const saved = localStorage.getItem('theme');
+			(function () {
+				const saved = localStorage.getItem("theme");
 				if (saved) {
-					document.documentElement.setAttribute('data-theme', saved);
+					document.documentElement.setAttribute("data-theme", saved);
 				}
 			})();
 		</script>
@@ -31,23 +34,96 @@ const currentPath = Astro.url.pathname;
 		<a href="#main-content" class="sr-only">Skip to main content</a>
 		<header class="main-header container animate-fade">
 			<a href="/" class="logo" aria-label="InFridge home">
-				<svg class="logo-icon" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-					<rect x="28" y="8" width="72" height="112" rx="10" stroke="currentColor" stroke-width="6"/>
-					<line x1="28" y1="48" x2="100" y2="48" stroke="currentColor" stroke-width="4"/>
-					<line x1="82" y1="28" x2="82" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-					<line x1="82" y1="60" x2="82" y2="80" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-					<circle cx="52" cy="30" r="6" fill="currentColor" opacity="0.3"/>
-					<circle cx="48" cy="70" r="5" fill="currentColor" opacity="0.3"/>
-					<circle cx="62" cy="74" r="5" fill="currentColor" opacity="0.3"/>
+				<svg
+					class="logo-icon"
+					viewBox="0 0 128 128"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+				>
+					<rect
+						x="28"
+						y="8"
+						width="72"
+						height="112"
+						rx="10"
+						stroke="currentColor"
+						stroke-width="6"></rect>
+					<line
+						x1="28"
+						y1="48"
+						x2="100"
+						y2="48"
+						stroke="currentColor"
+						stroke-width="4"></line>
+					<line
+						x1="82"
+						y1="28"
+						x2="82"
+						y2="40"
+						stroke="currentColor"
+						stroke-width="5"
+						stroke-linecap="round"></line>
+					<line
+						x1="82"
+						y1="60"
+						x2="82"
+						y2="80"
+						stroke="currentColor"
+						stroke-width="5"
+						stroke-linecap="round"></line>
+					<circle
+						cx="52"
+						cy="30"
+						r="6"
+						fill="currentColor"
+						opacity="0.3"></circle>
+					<circle
+						cx="48"
+						cy="70"
+						r="5"
+						fill="currentColor"
+						opacity="0.3"></circle>
+					<circle
+						cx="62"
+						cy="74"
+						r="5"
+						fill="currentColor"
+						opacity="0.3"></circle>
 				</svg>
-				<span class="logo-text">In<span class="text-gradient">Fridge</span></span>
+				<span class="logo-text"
+					>In<span class="text-gradient">Fridge</span>
+				</span>
 			</a>
 
 			<nav class="main-nav" aria-label="Main navigation">
-				<a href="/" class="nav-link" aria-current={currentPath === '/' ? 'page' : undefined}>Calculator</a>
-				<a href="/guide" class="nav-link" aria-current={currentPath === '/guide/' ? 'page' : undefined}>Kitchen Guide</a>
-				<a href="/vitamins" class="nav-link" aria-current={currentPath === '/vitamins/' ? 'page' : undefined}>Vitamins & Minerals</a>
-				<a href="/guidelines" class="nav-link" aria-current={currentPath === '/guidelines/' ? 'page' : undefined}>Portions & Rules</a>
+				<a
+					href="/"
+					class="nav-link"
+					aria-current={currentPath === "/" ? "page" : undefined}
+					>Calculator</a
+				>
+				<a
+					href="/guide"
+					class="nav-link"
+					aria-current={currentPath === "/guide/"
+						? "page"
+						: undefined}>Kitchen Guide</a
+				>
+				<a
+					href="/vitamins"
+					class="nav-link"
+					aria-current={currentPath === "/vitamins/"
+						? "page"
+						: undefined}>Vitamins & Minerals</a
+				>
+				<a
+					href="/guidelines"
+					class="nav-link"
+					aria-current={currentPath === "/guidelines/"
+						? "page"
+						: undefined}>Portions & Rules</a
+				>
 			</nav>
 
 			<button
@@ -66,30 +142,40 @@ const currentPath = Astro.url.pathname;
 
 		<footer class="container main-footer">
 			<p>
-				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS guidelines.
-				<br/>
-				Consult with a medical professional before starting any restrictive diet.
+				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS
+				guidelines.
+				<br />
+				Consult with a medical professional before starting any restrictive
+				diet.
 			</p>
 		</footer>
 
 		<script is:inline>
-			(function() {
-				var btn = document.getElementById('theme-toggle');
+			(function () {
+				var btn = document.getElementById("theme-toggle");
 				function getEffectiveTheme() {
-					var saved = localStorage.getItem('theme');
+					var saved = localStorage.getItem("theme");
 					if (saved) return saved;
-					return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					return window.matchMedia("(prefers-color-scheme: dark)")
+						.matches
+						? "dark"
+						: "light";
 				}
 				function updateIcon() {
-					var isDark = getEffectiveTheme() === 'dark';
-					btn.querySelector('.theme-toggle-icon').textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
-					btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+					var isDark = getEffectiveTheme() === "dark";
+					btn.querySelector(".theme-toggle-icon").textContent = isDark
+						? "\u2600\uFE0F"
+						: "\uD83C\uDF19";
+					btn.setAttribute(
+						"aria-label",
+						isDark ? "Switch to light mode" : "Switch to dark mode"
+					);
 				}
-				btn.addEventListener('click', function() {
+				btn.addEventListener("click", function () {
 					var current = getEffectiveTheme();
-					var next = current === 'dark' ? 'light' : 'dark';
-					document.documentElement.setAttribute('data-theme', next);
-					localStorage.setItem('theme', next);
+					var next = current === "dark" ? "light" : "dark";
+					document.documentElement.setAttribute("data-theme", next);
+					localStorage.setItem("theme", next);
 					updateIcon();
 				});
 				updateIcon();
@@ -143,9 +229,9 @@ const currentPath = Astro.url.pathname;
 	.nav-link {
 		color: var(--text-muted);
 		text-decoration: none;
-		font-weight: 500;
+		font-weight: 600;
 		transition: var(--transition);
-		font-size: 0.9rem;
+		font-size: 1.125rem;
 		white-space: nowrap;
 	}
 
@@ -190,7 +276,7 @@ const currentPath = Astro.url.pathname;
 
 	.main-footer p {
 		color: var(--text-muted);
-		font-size: 0.9rem;
+		font-size: 1rem;
 	}
 
 	@media (max-width: 768px) {

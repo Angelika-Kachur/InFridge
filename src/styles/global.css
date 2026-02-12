@@ -31,6 +31,9 @@
   --bg-glow-2: rgba(5, 150, 105, 0.06);
 
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Global scale up: 1rem = 18px */
+  font-size: 112.5%;
 }
 
 /* ===== Dark theme ===== */
@@ -103,7 +106,8 @@ body {
   background-color: var(--background);
   color: var(--text);
   font-family: var(--font-main);
-  line-height: 1.7;
+  line-height: 1.8;
+  /* Increased line-height */
   overflow-x: hidden;
   min-height: 100vh;
 }
@@ -129,6 +133,23 @@ h4 {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
+  color: var(--text);
+}
+
+h1 {
+  font-size: 1.4rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+h4 {
+  font-size: 1.25rem;
 }
 
 /* ===== Layout ===== */
@@ -195,9 +216,11 @@ h4 {
   background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
   color: white;
   border: none;
-  padding: 0.9rem 1.8rem;
+  padding: 1rem 2rem;
+  /* Larger padding */
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 1.125rem;
+  /* Larger font */
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
@@ -222,11 +245,14 @@ select {
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   color: var(--text);
-  padding: 0.85rem 1rem;
-  font-size: 0.95rem;
+  padding: 1rem 1.2rem;
+  /* Larger padding */
+  font-size: 1.05rem;
+  /* Larger font */
   font-family: inherit;
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
+  /* Larger touch target */
   transition: var(--transition);
 }
 
@@ -251,9 +277,11 @@ select:focus {
 
 label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  /* Larger font */
+  font-weight: 600;
+  /* Slightly bolder */
   color: var(--text-muted);
 }
 
