@@ -1,62 +1,130 @@
-# 🧊 InFridge | Personal Nutrition Assistant
+# InFridge
 
-**InFridge** is a modern, privacy-focused web application designed to simplify personal nutrition. It helps users calculate their daily caloric and macro needs based on specific health goals (like lowering cholesterol or blood pressure) and translates those numbers into actionable "Daily Missions" and real-food portion guides.
+Personal nutrition calculator and health guide built with Astro and React.
 
-## ✨ Features
+Helps users calculate daily caloric and macro needs based on specific health goals, then translates those numbers into actionable daily missions and real-food portion guides.
 
-### 🧮 Smart Nutrition Calculator
-- **Scientifically Backed:** Uses the *Mifflin-St Jeor* equation for accurate BMR/TDEE calculations.
-- **Goal-Oriented:** tailored adjustments for:
-  - Weight Loss / Gain / Maintenance
-  - Lowering Sugar (Pre-diabetic focus)
-  - Lowering LDL Cholesterol (Heart health focus)
-  - Lowering Blood Pressure (DASH approach)
+---
 
-### 🎮 Gamified Daily Missions
-- Automatically converts abstract gram targets (e.g., "140g Protein") into tangible missions (e.g., "Eat 6 Palms of Protein").
-- Tracks Water, Veggies, Proteins, Carbs, and Fats in simple, visual units (Palms, Fists, Thumbs).
+## Features
 
-### 🍽️ Dynamic Menu Builder
-- A cheat sheet that instantly generates a list of foods matching your specific daily targets.
-- distinct columns for Proteins, Carb sources, and Healthy Fats.
+**Nutrition Calculator** — Uses the Mifflin-St Jeor equation for BMR/TDEE. Supports 6 health goals: weight loss, gain, maintenance, lower sugar (pre-diabetic), lower LDL cholesterol, lower blood pressure (DASH).
 
-### 📚 Comprehensive Health Guides
-- **Kitchen Guide:** What to stock in your fridge for success.
-- **Critical Alerts:** Warnings about Red Meat limits, Processed Meats (Nitrates), and Ultra-Processed Foods.
-- **Vitamins & Minerals:** A detailed breakdown of Calcium, Iron, Magnesium, etc., with top food sources.
-- **Clean Fifteen:** A guide to produce with the lowest pesticide residues to save money on organic buying.
-- **Portion Guide:** Visual comparisons (Deck of cards, Tennis ball) to estimate food amounts without a scale.
+**BMI Analysis** — Calculates BMI with personalized weight thresholds for your height, category breakdown with health risks, and a collapsible educational panel.
 
-## 🛠️ Tech Stack
+**Daily Missions** — Converts gram targets into visual portions (palms of protein, fists of carbs, thumbs of fat) so you can follow your plan without a food scale.
 
-- **Framework:** [Astro](https://astro.build/) (v5) - For blazing fast performance and zero-JS default.
-- **Styling:** Vanilla CSS with a custom **Glassmorphism** design system.
-- **Language:** TypeScript / JavaScript.
-- **Deployment:** Static Site Generation (SSG) ready.
+**Food Guide** — Generates a cheat sheet of foods matching your daily targets, split into protein, carb, and fat columns with portion sizes.
 
-## 🚀 Getting Started
+**Health Guides** (static, zero-JS pages):
+- Kitchen Guide — what to stock, plus alerts on red meat limits, processed meats, UPFs, dirty dozen pesticides, mercury in fish
+- Vitamins & Minerals — daily targets and top food sources for 8 key micronutrients, plus the Clean Fifteen list
+- Portions & Rules — USDA 2020-2025 and NHS guidelines with visual portion comparisons
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/InFridge.git
-   cd InFridge
-   ```
+---
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-3. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:4321` in your browser.
+| Layer | Technology |
+|---|---|
+| Framework | [Astro 5](https://astro.build/) — static site generation, zero JS by default |
+| Interactive UI | [React 19](https://react.dev/) — used only on the Calculator page via Astro Islands (`client:load`) |
+| Language | TypeScript — strict types, no `any` |
+| Styling | Vanilla CSS — glassmorphism design system, light/dark themes, CSS custom properties |
+| Testing | [Vitest](https://vitest.dev/) — 36 unit tests covering all calculation logic |
 
-4. **Build for production:**
-   ```bash
-   npm run build
-   ```
+Static pages (Guide, Vitamins, Portions) ship **zero JavaScript** to the browser.
 
-## ⚠️ Disclaimer
-This application provides information based on general guidelines (USDA 2020-2025, NHS). It is not a substitute for professional medical advice. Always consult with a doctor or registered dietitian before making drastic changes to your diet, especially if you have underlying health conditions.
+---
+
+## Project Structure
+
+```
+src/
+  components/
+    Calculator.tsx          React calculator (only interactive component)
+    NutritionalInfo.astro   Kitchen guide (static)
+    VitaminsMinerals.astro  Vitamins reference (static)
+    Guidelines.astro        Portions & rules (static)
+  lib/
+    calculator.ts           Pure calculation functions (BMR, TDEE, BMI, macros)
+    calculator.test.ts      Unit tests
+    constants.ts            Formulas, macro ratios, food data
+    types.ts                TypeScript interfaces
+  layouts/
+    Layout.astro            Shared layout (header, nav, footer, theme toggle)
+  pages/
+    index.astro             Calculator page
+    guide.astro             Kitchen Guide
+    vitamins.astro          Vitamins & Minerals
+    guidelines.astro        Portions & Rules
+    404.astro               Custom error page
+  styles/
+    global.css              Design system (theming, glassmorphism, responsive)
+```
+
+---
+
+## Getting Started
+
+```bash
+git clone https://github.com/yourusername/InFridge.git
+cd InFridge
+npm install
+npm run dev          # dev server at localhost:4321
+```
+
+Other commands:
+
+```bash
+npm run build        # production build → dist/
+npm run preview      # preview production build
+npm test             # run unit tests
+npm run test:watch   # tests in watch mode
+```
+
+---
+
+## Architecture Decisions
+
+**Why Astro + React (not just React)?** — Only the Calculator page needs interactivity. The 3 guide pages are pure content. Astro renders them as static HTML with no JavaScript bundle. React hydrates only where needed.
+
+**Why one `useState` object?** — The Calculator stores all results (`nutrition`, `portions`, `bmi`, `goal`, `weight`) in a single state object. When it's `null`, only the form shows. When populated, all result components render. This avoids syncing multiple state variables.
+
+**Why uncontrolled form?** — The form uses `FormData` on submit instead of controlled inputs. We don't need to track every keystroke — only the final values matter. This avoids 6 separate `useState` calls.
+
+**Why separate `calculator.ts` from `Calculator.tsx`?** — Calculation logic is pure math with no UI dependencies. It can be unit tested without rendering React, reused in other contexts, and reasoned about independently.
+
+---
+
+## Testing
+
+36 unit tests cover the entire `calculator.ts` module:
+
+- `calculateBMR` — male/female offsets, age/weight/height effects
+- `calculateTDEE` — activity multiplier math
+- `calculateNutrition` — goal adjustments, macro ratios, rounding
+- `calculatePortions` — palm/fist/thumb conversions, water minimum floor
+- `calculateBMI` — all 4 WHO categories, boundary values, height-based thresholds
+- `getGoalInfo` — content checks, fallback for invalid input
+- `getGoalExtraMissions` — goal-specific extras, empty arrays for others
+
+```bash
+npm test
+```
+
+---
+
+## Disclaimer
+
+This application provides information based on general guidelines (USDA 2020-2025, NHS Eatwell Guide, WHO). It is not a substitute for professional medical advice. Consult a doctor or registered dietitian before making significant changes to your diet, especially with underlying health conditions.
+
+---
+
+## Sources
+
+- [USDA Dietary Guidelines 2020-2025](https://www.dietaryguidelines.gov/)
+- [NHS Eatwell Guide](https://www.nhs.uk/live-well/eat-well/)
+- [WHO Healthy Diet Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/healthy-diet)
+- [Mifflin-St Jeor Equation (PubMed)](https://pubmed.ncbi.nlm.nih.gov/15883556/)
+- [EWG Dirty Dozen & Clean Fifteen](https://www.ewg.org/foodnews/)
