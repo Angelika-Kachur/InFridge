@@ -3,9 +3,10 @@ import "../styles/global.css";
 
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description = "Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals." } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
@@ -15,7 +16,7 @@ const currentPath = Astro.url.pathname;
 		<meta charset="UTF-8" />
 		<meta
 			name="description"
-			content="Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals."
+			content={description}
 		/>
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
