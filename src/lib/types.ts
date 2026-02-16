@@ -45,3 +45,22 @@ export interface FoodItem {
   name: string;
   amount: string;
 }
+
+/**
+ * Structured data for goal-specific health tips.
+ * Previously this was raw HTML — now it's data that React components render.
+ */
+export interface GoalInfo {
+  label: string; // e.g. "Wellness Recommendation"
+  text: string;  // the actual advice text
+}
+
+/**
+ * Structured data for a single "mission" card (the daily tasks shown after calculation).
+ */
+export interface Mission {
+  icon: string;       // emoji like "🥩"
+  ariaLabel: string;  // accessible label for the emoji
+  title: string;      // e.g. "Eat 4 Palms of Protein"
+  description: string; // e.g. "~25g each (Chicken breast, Tofu block)"
+}

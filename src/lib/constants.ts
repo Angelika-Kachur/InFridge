@@ -1,4 +1,4 @@
-import type { Goal, MacroRatios, FoodItem } from "./types";
+import type { Goal, MacroRatios, FoodItem, GoalInfo } from "./types";
 
 // Mifflin-St Jeor Equation coefficients
 export const BMR = {
@@ -50,18 +50,33 @@ export const MACRO_RATIOS: Record<Goal, MacroRatios> = {
   pressure: { protein: 0.2, fat: 0.3, carbs: 0.5, saturatedFat: 0.07 },
 };
 
-// Goal-specific health tip HTML
-export const GOAL_INFO_HTML: Record<Goal, string> = {
-  maintain:
-    '<strong>Wellness Recommendation:</strong> Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.',
-  lose: '<strong>Wellness Recommendation:</strong> Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.',
-  gain: '<strong>Wellness Recommendation:</strong> Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.',
-  sugar:
-    '<strong>Health Tip:</strong> Focus on Low Glycemic Index (GI) carbs like legumes, oats, and leafy greens. Avoid simple sugars and refined white flour.',
-  cholesterol:
-    '<strong>Heart Health:</strong> Limit saturated fats (butter, fatty meats) to &lt;6% of total kcal. Increase soluble fiber (beans, apples) to lower LDL.',
-  pressure:
-    '<strong>DASH Principle:</strong> Prioritize high-potassium foods (bananas, potatoes, spinach) and magnesium. Keep sodium below 1,500mg daily.',
+// Goal-specific health tips as structured data (not HTML strings).
+// React components will decide how to render these.
+export const GOAL_INFO: Record<Goal, GoalInfo> = {
+  maintain: {
+    label: "Wellness Recommendation",
+    text: "Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.",
+  },
+  lose: {
+    label: "Wellness Recommendation",
+    text: "Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.",
+  },
+  gain: {
+    label: "Wellness Recommendation",
+    text: "Drink at least 2L of water daily and aim for 5 servings of vegetables as per UK NHS guidelines.",
+  },
+  sugar: {
+    label: "Health Tip",
+    text: "Focus on Low Glycemic Index (GI) carbs like legumes, oats, and leafy greens. Avoid simple sugars and refined white flour.",
+  },
+  cholesterol: {
+    label: "Heart Health",
+    text: "Limit saturated fats (butter, fatty meats) to <6% of total kcal. Increase soluble fiber (beans, apples) to lower LDL.",
+  },
+  pressure: {
+    label: "DASH Principle",
+    text: "Prioritize high-potassium foods (bananas, potatoes, spinach) and magnesium. Keep sodium below 1,500mg daily.",
+  },
 };
 
 // Food data

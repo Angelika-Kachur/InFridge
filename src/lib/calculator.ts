@@ -1,4 +1,4 @@
-import type { Goal, UserProfile, NutritionResult, PortionResult } from "./types";
+import type { Goal, UserProfile, NutritionResult, PortionResult, GoalInfo, Mission } from "./types";
 import {
   BMR,
   CALORIES_PER_GRAM,
@@ -6,7 +6,7 @@ import {
   WATER,
   CALORIE_ADJUSTMENTS,
   MACRO_RATIOS,
-  GOAL_INFO_HTML,
+  GOAL_INFO,
 } from "./constants";
 
 export function calculateBMR(
@@ -71,34 +71,40 @@ export function calculatePortions(
   };
 }
 
-export function getGoalInfoHtml(goal: Goal): string {
-  return GOAL_INFO_HTML[goal] ?? GOAL_INFO_HTML.maintain;
+/**
+ * Returns structured goal info data (not HTML).
+ * The React component will decide how to render this.
+ */
+export function getGoalInfo(goal: Goal): GoalInfo {
+  return GOAL_INFO[goal] ?? GOAL_INFO.maintain;
 }
 
-export function getGoalExtraMissionsHtml(goal: Goal): string {
+/**
+ * Returns an array of extra mission objects for specific goals.
+ * Sugar and cholesterol goals have bonus missions; others return empty array.
+ */
+export function getGoalExtraMissions(goal: Goal): Mission[] {
   if (goal === "sugar") {
-    return `
-      <div class="mission-card mission-sugar">
-        <div class="mission-icon" role="img" aria-label="No sugary drinks">🚫</div>
-        <div class="mission-details">
-          <h4>No sugary drinks</h4>
-          <p>0g added sugar from beverages.</p>
-        </div>
-      </div>
-    `;
+    return [
+      {
+        icon: "🚫",
+        ariaLabel: "No sugary drinks",
+        title: "No sugary drinks",
+        description: "0g added sugar from beverages.",
+      },
+    ];
   }
 
   if (goal === "cholesterol") {
-    return `
-       <div class="mission-card" style="border-color: var(--accent);">
-        <div class="mission-icon" role="img" aria-label="Oily fish">🐟</div>
-        <div class="mission-details">
-          <h4>Eat Oily Fish x2/week</h4>
-          <p>Salmon/Mackerel for Omega-3.</p>
-        </div>
-      </div>
-    `;
+    return [
+      {
+        icon: "🐟",
+        ariaLabel: "Oily fish",
+        title: "Eat Oily Fish x2/week",
+        description: "Salmon/Mackerel for Omega-3.",
+      },
+    ];
   }
 
-  return "";
+  return [];
 }
