@@ -36,7 +36,7 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 	</head>
 	<body>
 		<a href="#main-content" class="sr-only">Skip to main content</a>
-		<header class="main-header container animate-fade">
+		<header class="main-header animate-fade" id="main-header">
 			<a href="/" class="logo" aria-label="InFridge home">
 				<svg
 					class="logo-icon"
@@ -121,9 +121,8 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 				<a
 					href="/guide"
 					class="nav-link"
-					aria-current={currentPath === "/guide"
-						? "page"
-						: undefined}>Kitchen Guide</a
+					aria-current={currentPath === "/guide" ? "page" : undefined}
+					>Kitchen Guide</a
 				>
 				<a
 					href="/vitamins"
@@ -260,6 +259,18 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 						menuBtn.setAttribute("aria-label", "Open menu");
 					});
 				});
+
+				// Sticky header — show background only after scrolling
+				var header = document.getElementById("main-header");
+				function onScroll() {
+					if (window.scrollY > 10) {
+						header.classList.add("header--scrolled");
+					} else {
+						header.classList.remove("header--scrolled");
+					}
+				}
+				window.addEventListener("scroll", onScroll, { passive: true });
+				onScroll();
 			})();
 		</script>
 	</body>
@@ -271,9 +282,33 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: center;
-		padding-top: 2rem;
-		padding-bottom: 2rem;
-		margin-bottom: 1rem;
+		max-width: 1100px;
+		margin: 0 auto 1rem;
+		padding: 0.7rem 2.5rem;
+		width: 100%;
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background: transparent;
+		border-bottom: 1px solid transparent;
+		transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+	}
+
+	:global(.header--scrolled) {
+		background: var(--glass-bg) !important;
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border-bottom-color: var(--glass-border) !important;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+		max-width: 100% !important;
+		padding-left: max(
+			2.5rem,
+			calc((100% - 1100px) / 2 + 2.5rem)
+		) !important;
+		padding-right: max(
+			2.5rem,
+			calc((100% - 1100px) / 2 + 2.5rem)
+		) !important;
 	}
 
 	.logo {
@@ -500,7 +535,7 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 	}
 
 	/* Mobile — hamburger menu */
-	@media (max-width: 860px) {
+	@media (max-width: 940px) {
 		.menu-toggle {
 			display: flex;
 		}
