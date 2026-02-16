@@ -23,9 +23,9 @@ Helps users calculate daily caloric and macro needs based on specific health goa
 
 ---
 ß
-## DEMO
+## Live DEMO
 
-Deployed at: https://infridge-app.vercel.app/
+👉 Deployed at: https://infridge-app.vercel.app/
 
 ---
 
