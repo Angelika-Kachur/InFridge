@@ -107,9 +107,11 @@ body {
   color: var(--text);
   font-family: var(--font-main);
   line-height: 1.8;
-  /* Increased line-height */
   overflow-x: hidden;
   min-height: 100vh;
+  /* Sticky footer: body is a flex column, main grows to fill space */
+  display: flex;
+  flex-direction: column;
 }
 
 body::before {
@@ -157,6 +159,12 @@ h4 {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem;
+  width: 100%;
+}
+
+/* Main content grows to push footer to bottom */
+#main-content {
+  flex: 1;
 }
 
 /* ===== Glass card ===== */

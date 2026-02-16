@@ -6,7 +6,10 @@ interface Props {
 	description?: string;
 }
 
-const { title, description = "Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals." } = Astro.props;
+const {
+	title,
+	description = "Calculate your daily kcal, protein, and macro needs based on age, sex, and health goals.",
+} = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
@@ -14,10 +17,7 @@ const currentPath = Astro.url.pathname;
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			name="description"
-			content={description}
-		/>
+		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
@@ -152,13 +152,61 @@ const currentPath = Astro.url.pathname;
 		</main>
 
 		<footer class="container main-footer">
-			<p>
-				&copy; 2026 InFridge. Data based on USDA 2020-2025 and NHS
-				guidelines.
-				<br />
-				Consult with a medical professional before starting any restrictive
-				diet.
-			</p>
+			<div class="footer-disclaimer">
+				<p>
+					<strong>Disclaimer:</strong> InFridge is for informational and
+					educational purposes only. It is not a substitute for professional
+					medical advice, diagnosis, or treatment. Always consult a qualified
+					healthcare provider.
+				</p>
+			</div>
+
+			<div class="footer-sources">
+				<p class="footer-sources-title">Sources</p>
+				<ul>
+					<li>
+						<a
+							href="https://www.dietaryguidelines.gov/resources/2020-2025-dietary-guidelines-online-materials"
+							target="_blank"
+							rel="noopener noreferrer"
+							>USDA Dietary Guidelines 2020-2025</a
+						>
+					</li>
+					<li>
+						<a
+							href="https://www.nhs.uk/live-well/eat-well/the-eatwell-guide/"
+							target="_blank"
+							rel="noopener noreferrer">NHS Eatwell Guide</a
+						>
+					</li>
+					<li>
+						<a
+							href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+							target="_blank"
+							rel="noopener noreferrer"
+							>WHO Healthy Diet Fact Sheet</a
+						>
+					</li>
+					<li>
+						<a
+							href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2824150/"
+							target="_blank"
+							rel="noopener noreferrer"
+							>Mifflin-St Jeor Equation (PubMed)</a
+						>
+					</li>
+					<li>
+						<a
+							href="https://www.ewg.org/foodnews/dirty-dozen.php"
+							target="_blank"
+							rel="noopener noreferrer"
+							>EWG Dirty Dozen & Clean Fifteen</a
+						>
+					</li>
+				</ul>
+			</div>
+
+			<p class="footer-copy">&copy; 2026 InFridge</p>
 		</footer>
 
 		<script is:inline>
@@ -196,7 +244,10 @@ const currentPath = Astro.url.pathname;
 				menuBtn.addEventListener("click", function () {
 					var isOpen = nav.classList.toggle("nav-open");
 					menuBtn.setAttribute("aria-expanded", isOpen);
-					menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+					menuBtn.setAttribute(
+						"aria-label",
+						isOpen ? "Close menu" : "Open menu"
+					);
 				});
 
 				nav.querySelectorAll(".nav-link").forEach(function (link) {
@@ -364,15 +415,70 @@ const currentPath = Astro.url.pathname;
 
 	.main-footer {
 		text-align: center;
-		margin-top: 5rem;
-		padding-bottom: 4rem;
+		margin-top: auto;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
 		border-top: 1px solid var(--glass-border);
-		padding-top: 2rem;
 	}
 
-	.main-footer p {
+	.footer-disclaimer {
+		max-width: 1000px;
+		margin: 0 auto 2rem;
+		padding: 1.5rem;
+		border-radius: 12px;
+		background: var(--glass-bg);
+		border-left: 4px solid var(--primary);
+		text-align: left;
+	}
+
+	.footer-disclaimer p {
 		color: var(--text-muted);
-		font-size: 1rem;
+		font-size: 0.9rem;
+		line-height: 1.7;
+		margin: 0;
+	}
+
+	.footer-disclaimer strong {
+		color: var(--text);
+	}
+
+	.footer-sources {
+		margin-bottom: 2rem;
+	}
+
+	.footer-sources-title {
+		font-size: 0.9rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--text-muted);
+		margin-bottom: 0.8rem;
+	}
+
+	.footer-sources ul {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.6rem 1.5rem;
+	}
+
+	.footer-sources a {
+		color: var(--primary);
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: var(--transition);
+	}
+
+	.footer-sources a:hover {
+		text-decoration: underline;
+		opacity: 0.8;
+	}
+
+	.footer-copy {
+		color: var(--text-muted);
+		font-size: 0.85rem;
+		margin: 0;
 	}
 
 	/* Mobile — hamburger menu */
