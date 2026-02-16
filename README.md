@@ -22,10 +22,16 @@ Helps users calculate daily caloric and macro needs based on specific health goa
 - Portions & Rules — USDA 2020-2025 and NHS guidelines with visual portion comparisons
 
 ---
-ß
+
 ## Live DEMO
 
 👉 Deployed at: https://infridge-app.vercel.app/
+
+---
+
+## Preview
+
+![App Screenshot](./screenshot.png)
 
 ---
 
