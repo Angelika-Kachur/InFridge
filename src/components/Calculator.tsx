@@ -19,9 +19,12 @@ import type { Goal, ActivityLevel, NutritionResult, PortionResult, FoodItem, Mis
  * - value: the number to display
  * - unit: optional unit text (e.g., "grams")
  */
-function ResultTile({ label, value, unit }: { label: string; value: number; unit?: string }) {
+function ResultTile({ label, value, unit, delay = 0 }: { label: string; value: number; unit?: string; delay?: number }) {
   return (
-    <div className="result-tile">
+    <div
+      className="result-tile stagger-in"
+      style={{ animationDelay: `${delay * 0.08}s` }}
+    >
       <span className="label">{label}</span>
       <span className="value">{value}</span>
       {/* Conditional rendering: only show unit span if `unit` is provided */}
@@ -36,9 +39,12 @@ function ResultTile({ label, value, unit }: { label: string; value: number; unit
  * This replaces the big innerHTML template literal that built mission HTML.
  * Now each mission is a clean, typed component.
  */
-function MissionCard({ icon, ariaLabel, title, description, style }: Mission & { style?: React.CSSProperties }) {
+function MissionCard({ icon, ariaLabel, title, description, style, delay = 0 }: Mission & { style?: React.CSSProperties; delay?: number }) {
   return (
-    <div className="mission-card" style={style}>
+    <div
+      className="mission-card stagger-in"
+      style={{ ...style, animationDelay: `${delay * 0.08}s` }}
+    >
       <div className="mission-icon" role="img" aria-label={ariaLabel}>
         {icon}
       </div>
@@ -290,12 +296,18 @@ export default function Calculator() {
       {result && (
         <div id="results" className="results-container" role="region" aria-label="Calculation results" aria-live="polite">
           {/* ── Result Tiles ── */}
+          {/*
+            STAGGERED ANIMATION:
+            Each tile gets a CSS class "stagger-in" plus an increasing animationDelay.
+            Tile 1 appears at 0s, tile 2 at 0.08s, tile 3 at 0.16s, etc.
+            This creates a smooth cascade effect without any JS animation library.
+          */}
           <div className="results-grid">
-            <ResultTile label="Daily kcal" value={result.nutrition.targetKcal} />
-            <ResultTile label="Proteins" value={result.nutrition.proteinGrams} unit="grams" />
-            <ResultTile label="Carbs" value={result.nutrition.carbGrams} unit="grams" />
-            <ResultTile label="Fats" value={result.nutrition.fatGrams} unit="grams" />
-            <ResultTile label="Saturated Fat" value={result.nutrition.saturatedFatGrams} unit="grams, maximum" />
+            <ResultTile label="Daily kcal" value={result.nutrition.targetKcal} delay={0} />
+            <ResultTile label="Proteins" value={result.nutrition.proteinGrams} unit="grams" delay={1} />
+            <ResultTile label="Carbs" value={result.nutrition.carbGrams} unit="grams" delay={2} />
+            <ResultTile label="Fats" value={result.nutrition.fatGrams} unit="grams" delay={3} />
+            <ResultTile label="Saturated Fat" value={result.nutrition.saturatedFatGrams} unit="grams, maximum" delay={4} />
           </div>
 
           {/* ── Daily Missions ── */}
@@ -314,10 +326,11 @@ export default function Calculator() {
                 individual props. It's shorthand for:
                 icon={mission.icon} ariaLabel={mission.ariaLabel} title={mission.title} ...
               */}
-              {allMissions.map((mission) => (
+              {allMissions.map((mission, index) => (
                 <MissionCard
                   key={mission.title}
                   {...mission}
+                  delay={index}
                   style={
                     mission.ariaLabel === "Oily fish"
                       ? { borderColor: "var(--accent)" }
@@ -329,7 +342,7 @@ export default function Calculator() {
           </div>
 
           {/* ── Food Guide ── */}
-          <div className="food-options-container">
+          <div className="food-options-container stagger-in" style={{ animationDelay: "0.3s" }}>
             <div className="food-section-header">
               <h3 className="section-title">Food Guide</h3>
               <p className="section-subtitle">Build your daily menu from these options</p>
@@ -365,7 +378,7 @@ export default function Calculator() {
 
           {/* ── Goal-Specific Info ── */}
           {goalInfo && (
-            <div className="additional-info">
+            <div className="additional-info stagger-in" style={{ animationDelay: "0.4s" }}>
               <strong>{goalInfo.label}:</strong> {goalInfo.text}
             </div>
           )}
