@@ -1,8 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Calculator from '../components/Calculator.astro';
+import Calculator from '../components/Calculator.tsx';
 ---
 
 <Layout title="InFridge | Personal Nutrition">
-	<Calculator />
+	{/*
+		client:load is an Astro directive that tells Astro:
+		"This component needs JavaScript — hydrate it immediately when the page loads."
+
+		Other options you could use:
+		- client:visible — hydrate only when the component scrolls into view (lazy)
+		- client:idle — hydrate once the browser is idle (after initial page load)
+		- No directive — renders as static HTML with zero JS (what the other pages do)
+
+		We use client:load here because the Calculator is above the fold and
+		the form needs to be interactive immediately.
+	*/}
+	<Calculator client:load />
 </Layout>
