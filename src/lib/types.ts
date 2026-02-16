@@ -50,6 +50,16 @@ export interface FoodItem {
  * Structured data for goal-specific health tips.
  * Previously this was raw HTML — now it's data that React components render.
  */
+/**
+ * BMI result with the numeric value and a human-readable category.
+ * BMI = weight(kg) / height(m)^2
+ */
+export interface BmiResult {
+  value: number;         // e.g. 24.5
+  category: string;      // e.g. "Normal weight"
+  color: string;         // CSS variable name for visual indicator
+}
+
 export interface GoalInfo {
   label: string; // e.g. "Wellness Recommendation"
   text: string;  // the actual advice text

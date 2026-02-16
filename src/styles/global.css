@@ -23,12 +23,12 @@
   --card-hover-bg: rgba(255, 255, 255, 0.8);
   --card-hover-border: rgba(79, 70, 229, 0.2);
   --card-subtle-bg: rgba(0, 0, 0, 0.02);
-  --card-warning-bg: rgba(220, 38, 38, 0.04);
+  --card-warning-bg: rgba(217, 119, 6, 0.06);
 
   --input-bg: rgba(255, 255, 255, 0.8);
 
-  --bg-glow-1: rgba(79, 70, 229, 0.08);
-  --bg-glow-2: rgba(5, 150, 105, 0.06);
+  --bg-glow-1: rgba(79, 70, 229, 0.12);
+  --bg-glow-2: rgba(5, 150, 105, 0.09);
 
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -56,7 +56,7 @@
   --card-hover-bg: rgba(255, 255, 255, 0.07);
   --card-hover-border: rgba(255, 255, 255, 0.15);
   --card-subtle-bg: rgba(255, 255, 255, 0.03);
-  --card-warning-bg: rgba(255, 100, 100, 0.04);
+  --card-warning-bg: rgba(245, 158, 11, 0.08);
 
   --input-bg: rgba(15, 23, 42, 0.5);
 
@@ -85,7 +85,7 @@
     --card-hover-bg: rgba(255, 255, 255, 0.07);
     --card-hover-border: rgba(255, 255, 255, 0.15);
     --card-subtle-bg: rgba(255, 255, 255, 0.03);
-    --card-warning-bg: rgba(255, 100, 100, 0.04);
+    --card-warning-bg: rgba(245, 158, 11, 0.08);
 
     --input-bg: rgba(15, 23, 42, 0.5);
 
@@ -139,11 +139,11 @@ h4 {
 }
 
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.75rem;
 }
 
 h2 {
-  font-size: 1.3rem;
+  font-size: 1.45rem;
 }
 
 h3 {
@@ -151,7 +151,7 @@ h3 {
 }
 
 h4 {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
 }
 
 /* ===== Layout ===== */
@@ -179,11 +179,8 @@ h4 {
   transition: var(--transition);
 }
 
-.glass-card:hover {
-  background: var(--card-hover-bg);
-  border-color: var(--card-hover-border);
-  transform: translateY(-3px);
-}
+/* No hover-lift on glass-card — it wraps large sections like the Calculator.
+   Hover-lift is reserved for small, clickable .card elements. */
 
 /* ===== Shared card ===== */
 .card {
@@ -225,14 +222,13 @@ h4 {
   color: white;
   border: none;
   padding: 1rem 2rem;
-  /* Larger padding */
   border-radius: 12px;
   font-size: 1.125rem;
-  /* Larger font */
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
 }
 
 .btn-primary:hover {
@@ -346,6 +342,23 @@ label {
   animation: staggerIn 0.4s ease-out forwards;
 }
 
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-fade,
+  .stagger-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ===== Screen-reader only ===== */
 .sr-only {
   position: absolute;
@@ -438,40 +451,194 @@ label {
   display: none;
 }
 
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.2rem;
-  margin-bottom: 2.5rem;
+/* Section heading for results */
+.results-heading {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
 }
 
-.result-tile {
-  background: var(--card-subtle-bg);
-  padding: 1.5rem;
-  border-radius: 16px;
+/* Hero row: kcal + BMI side by side */
+.results-hero-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .results-hero-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Big kcal display */
+.kcal-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+  border-radius: 20px;
+  padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 160px;
+}
+
+.kcal-hero__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.kcal-hero__value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.kcal-hero__unit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* BMI card */
+.bmi-card {
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.bmi-card__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.bmi-card__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.bmi-card__value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.bmi-card__category {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.bmi-scale {
+  margin-top: auto;
+}
+
+.bmi-scale__track {
+  height: 6px;
+  background: var(--card-subtle-bg);
+  border-radius: 3px;
+  overflow: hidden;
   border: 1px solid var(--glass-border);
 }
 
-.result-tile .label {
+.bmi-scale__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease-out;
+}
+
+.bmi-scale__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Macro nutrient tiles */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .macro-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.macro-tile {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem 1.2rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.macro-tile__accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.macro-tile__value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.macro-tile__unit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.macro-tile__label {
   display: block;
   font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+
+.macro-tile__sub {
+  display: block;
+  font-size: 0.75rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
-}
-
-.result-tile .value {
-  display: block;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.result-tile .unit {
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  letter-spacing: 0.04em;
 }
 
 .additional-info {

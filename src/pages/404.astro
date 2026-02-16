@@ -5,7 +5,14 @@ import Layout from "../layouts/Layout.astro";
 <Layout title="404 - Not Found | InFridge">
     <div class="error-container">
         <div class="glass-card animate-fade error-content">
-            <div class="emoji-404" role="img" aria-label="Empty fridge">🧊</div>
+            <div class="icon-404" aria-label="Empty fridge">
+                <svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="28" y="8" width="72" height="112" rx="10" stroke="currentColor" stroke-width="6"/>
+                    <line x1="28" y1="48" x2="100" y2="48" stroke="currentColor" stroke-width="4"/>
+                    <line x1="82" y1="28" x2="82" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                    <line x1="82" y1="60" x2="82" y2="80" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+            </div>
             <h1 class="text-gradient">404</h1>
             <h2>Nothing in the Fridge!</h2>
             <p>
@@ -40,10 +47,15 @@ import Layout from "../layouts/Layout.astro";
         padding: 3rem 2rem;
     }
 
-    .emoji-404 {
-        font-size: 5rem;
+    .icon-404 {
         margin-bottom: 0.5rem;
         animation: float 6s ease-in-out infinite;
+        color: var(--primary);
+    }
+
+    .icon-404 svg {
+        width: 5rem;
+        height: 5rem;
     }
 
     h1 {

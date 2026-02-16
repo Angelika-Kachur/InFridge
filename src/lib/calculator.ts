@@ -1,4 +1,4 @@
-import type { Goal, UserProfile, NutritionResult, PortionResult, GoalInfo, Mission } from "./types";
+import type { Goal, UserProfile, NutritionResult, PortionResult, GoalInfo, Mission, BmiResult } from "./types";
 import {
   BMR,
   CALORIES_PER_GRAM,
@@ -69,6 +69,25 @@ export function calculatePortions(
       Math.round((weightKg * WATER.ML_PER_KG * 1000) / WATER.ML_PER_CUP),
     ),
   };
+}
+
+/**
+ * Calculates BMI (Body Mass Index).
+ * Formula: weight(kg) / height(m)^2
+ * WHO classification:
+ *   <18.5 = Underweight
+ *   18.5-24.9 = Normal weight
+ *   25-29.9 = Overweight
+ *   30+ = Obese
+ */
+export function calculateBMI(weightKg: number, heightCm: number): BmiResult {
+  const heightM = heightCm / 100;
+  const value = Math.round((weightKg / (heightM * heightM)) * 10) / 10;
+
+  if (value < 18.5) return { value, category: "Underweight", color: "var(--accent)" };
+  if (value < 25) return { value, category: "Normal weight", color: "var(--secondary)" };
+  if (value < 30) return { value, category: "Overweight", color: "var(--accent)" };
+  return { value, category: "Obese", color: "var(--error)" };
 }
 
 /**

@@ -3,7 +3,7 @@
 
 <section class="vitamins-section animate-fade">
   <div class="clean-fifteen-card">
-    <h2 class="text-gradient">
+    <h2>
       <span role="img" aria-hidden="true">✨</span> The Clean Fifteen
     </h2>
     <p class="section-desc">
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <h2 class="text-gradient" style="margin-top: 4rem; margin-bottom: 2rem;">
+  <h2 style="margin-top: 4rem; margin-bottom: 2rem;">
     <span role="img" aria-hidden="true">💊</span> Vitamins & Minerals Cheat Sheet
   </h2>
   <div class="auto-grid">
@@ -216,6 +216,14 @@
     text-align: center;
     font-size: 1rem;
     font-weight: 500;
+    border: 1px solid transparent;
+    transition: var(--transition);
+  }
+
+  .fifteen-grid .item:hover {
+    background: var(--card-hover-bg);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
   }
 
   .fifteen-grid span {

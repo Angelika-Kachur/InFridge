@@ -1,45 +1,108 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-import { calculateNutrition, calculatePortions, getGoalInfo, getGoalExtraMissions } from "../lib/calculator";
+import {
+  calculateNutrition,
+  calculatePortions,
+  calculateBMI,
+  getGoalInfo,
+  getGoalExtraMissions,
+} from "../lib/calculator";
 import { PROTEIN_FOODS, CARB_FOODS, FAT_FOODS, PORTION_SIZES } from "../lib/constants";
-import type { Goal, ActivityLevel, NutritionResult, PortionResult, FoodItem, Mission } from "../lib/types";
+import type {
+  Goal,
+  ActivityLevel,
+  NutritionResult,
+  PortionResult,
+  BmiResult,
+  FoodItem,
+  Mission,
+} from "../lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SMALL SUB-COMPONENTS
-// Each one is a simple function that receives props and returns JSX.
-// Breaking the UI into small pieces makes each part easy to understand and test.
+// SUB-COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * ResultTile — displays one result metric (e.g., "Daily kcal: 2200").
- *
- * Props explained:
- * - label: the heading text (e.g., "Daily kcal")
- * - value: the number to display
- * - unit: optional unit text (e.g., "grams")
- */
-function ResultTile({ label, value, unit, delay = 0 }: { label: string; value: number; unit?: string; delay?: number }) {
+/** The hero kcal number — large and prominent at the top of results. */
+function KcalHero({ kcal, delay = 0 }: { kcal: number; delay?: number }) {
   return (
-    <div
-      className="result-tile stagger-in"
-      style={{ animationDelay: `${delay * 0.08}s` }}
-    >
-      <span className="label">{label}</span>
-      <span className="value">{value}</span>
-      {/* Conditional rendering: only show unit span if `unit` is provided */}
-      {unit && <span className="unit">{unit}</span>}
+    <div className="kcal-hero stagger-in" style={{ animationDelay: `${delay * 0.08}s` }}>
+      <span className="kcal-hero__label">Your Daily Target</span>
+      <span className="kcal-hero__value">{kcal}</span>
+      <span className="kcal-hero__unit">kcal / day</span>
     </div>
   );
 }
 
-/**
- * MissionCard — one daily mission (e.g., "Eat 4 Palms of Protein").
- *
- * This replaces the big innerHTML template literal that built mission HTML.
- * Now each mission is a clean, typed component.
- */
-function MissionCard({ icon, ariaLabel, title, description, style, delay = 0 }: Mission & { style?: React.CSSProperties; delay?: number }) {
+/** BMI display card with colored indicator. */
+function BmiCard({ bmi, delay = 0 }: { bmi: BmiResult; delay?: number }) {
+  return (
+    <div className="bmi-card stagger-in" style={{ animationDelay: `${delay * 0.08}s` }}>
+      <div className="bmi-card__header">
+        <span className="bmi-card__label">BMI</span>
+        <span className="bmi-card__value" style={{ color: bmi.color }}>
+          {bmi.value}
+        </span>
+      </div>
+      <span className="bmi-card__category" style={{ color: bmi.color }}>
+        {bmi.category}
+      </span>
+      {/* Visual BMI scale bar */}
+      <div className="bmi-scale">
+        <div className="bmi-scale__track">
+          <div
+            className="bmi-scale__fill"
+            style={{
+              // Map BMI 15-40 to 0-100%
+              width: `${Math.min(100, Math.max(0, ((bmi.value - 15) / 25) * 100))}%`,
+              background: bmi.color,
+            }}
+          />
+        </div>
+        <div className="bmi-scale__labels">
+          <span>15</span>
+          <span>18.5</span>
+          <span>25</span>
+          <span>30</span>
+          <span>40</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** A single macro nutrient tile (protein, carbs, fats, sat fat). */
+function MacroTile({
+  label,
+  value,
+  unit,
+  accent,
+  delay = 0,
+}: {
+  label: string;
+  value: number;
+  unit: string;
+  accent?: string;
+  delay?: number;
+}) {
+  return (
+    <div className="macro-tile stagger-in" style={{ animationDelay: `${delay * 0.08}s` }}>
+      {accent && <div className="macro-tile__accent" style={{ background: accent }} />}
+      <span className="macro-tile__value">{value}<span className="macro-tile__unit">g</span></span>
+      <span className="macro-tile__label">{label}</span>
+      <span className="macro-tile__sub">{unit}</span>
+    </div>
+  );
+}
+
+function MissionCard({
+  icon,
+  ariaLabel,
+  title,
+  description,
+  style,
+  delay = 0,
+}: Mission & { style?: React.CSSProperties; delay?: number }) {
   return (
     <div
       className="mission-card stagger-in"
@@ -56,14 +119,6 @@ function MissionCard({ icon, ariaLabel, title, description, style, delay = 0 }: 
   );
 }
 
-/**
- * FoodCategory — one column in the food guide (Proteins, Carbs, or Fats).
- *
- * Demonstrates list rendering with .map():
- * Instead of building an HTML string with .map().join(""),
- * React maps each item to a JSX element. The `key` prop tells React
- * which list item is which, so it can efficiently update the DOM.
- */
 function FoodCategory({
   title,
   target,
@@ -88,14 +143,16 @@ function FoodCategory({
         </span>
       </div>
       <p className="category-desc">
-        <strong>~{portionSize}g of {portionUnit}</strong> per portion
+        <strong>
+          ~{portionSize}g of {portionUnit}
+        </strong>{" "}
+        per portion
       </p>
       <div className="food-list-header">
         <span>Food Item</span>
         <span>Portion Size</span>
       </div>
       <ul className="food-list">
-        {/* List rendering: .map() creates one <li> per food item */}
         {foods.map((food) => (
           <li key={food.name}>
             <span className="food-name">{food.name}: </span>
@@ -109,43 +166,20 @@ function FoodCategory({
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN CALCULATOR COMPONENT
-// This is the "parent" that manages all state and composes the sub-components.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Calculator — the main exported component.
- *
- * STATE MANAGEMENT:
- * Using a single `result` state that is either `null` (no calculation yet)
- * or an object with all computed values. When the form is submitted, 
- * everything calculates and setResult() is called. React then re-renders, and
- * since `result` is no longer null, all the result sections appear.
- *
- * 
- */
 export default function Calculator() {
-  // ── STATE ──────────────────────────────────────────────────────────────
-  // useState<Type | null>(null) means:
-  // - The type can be our result object OR null
-  // - It starts as null (no results yet)
-  // - When we call setResult({...}), React re-renders this component
   const [result, setResult] = useState<{
     nutrition: NutritionResult;
     portions: PortionResult;
+    bmi: BmiResult;
     goal: Goal;
   } | null>(null);
 
-  // ── EVENT HANDLER ─────────────────────────────────────────────────────
-  // This function runs when the form is submitted.
-  // It reads values from the form, runs calculations, and updates state.
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    // Prevent the browser from reloading the page (default form behavior)
     e.preventDefault();
 
-    // FormData is a native browser API that reads all form field values.
-    // We use the `name` attribute on each input/select to identify fields.
     const formData = new FormData(e.currentTarget);
-
     const sex = formData.get("sex") as "male" | "female";
     const age = Number(formData.get("age"));
     const weight = Number(formData.get("weight"));
@@ -153,14 +187,12 @@ export default function Calculator() {
     const activity = Number(formData.get("activity")) as ActivityLevel;
     const goal = formData.get("goal") as Goal;
 
-    // Run the same calculation functions as before — zero changes to logic
     const nutrition = calculateNutrition({ sex, age, weight, height, activity, goal });
     const portions = calculatePortions(nutrition, weight);
+    const bmi = calculateBMI(weight, height);
 
-    // Update state — this triggers a re-render, showing all result sections
-    setResult({ nutrition, portions, goal });
+    setResult({ nutrition, portions, bmi, goal });
 
-    // Smooth scroll to results after a tiny delay (let React render first)
     setTimeout(() => {
       document.getElementById("results")?.scrollIntoView({
         behavior: "smooth",
@@ -169,54 +201,46 @@ export default function Calculator() {
     }, 50);
   }
 
-  // ── DERIVED DATA ──────────────────────────────────────────────────────
-  // These values are computed from the result state.
-  // They're only used when `result` is not null (inside the conditional render below).
   const goalInfo = result ? getGoalInfo(result.goal) : null;
   const extraMissions = result ? getGoalExtraMissions(result.goal) : [];
 
-  // Build the standard missions list from portions data.
   const baseMissions: Mission[] = result
     ? [
-      {
-        icon: "🥩",
-        ariaLabel: "Protein",
-        title: `Eat ${result.portions.proteinPortions} Palms of Protein`,
-        description: `~${PORTION_SIZES.PROTEIN_PER_PALM}g each (Chicken breast, Tofu block)`,
-      },
-      {
-        icon: "🍚",
-        ariaLabel: "Carbs",
-        title: `Eat ${result.portions.carbPortions} Fists of Carbs`,
-        description: `~${PORTION_SIZES.CARBS_PER_FIST}g each (Rice, Potato, Oats)`,
-      },
-      {
-        icon: "🥑",
-        ariaLabel: "Fats",
-        title: `Limit to ${result.portions.fatPortions} Thumbs of Fat`,
-        description: `~${PORTION_SIZES.FAT_PER_THUMB}g each (Oils, Nuts, Butter)`,
-      },
-      {
-        icon: "🥬",
-        ariaLabel: "Vegetables",
-        title: "Eat 5+ Vegetable Servings",
-        description: "80g is one serving (1 handful)",
-      },
-      {
-        icon: "💧",
-        ariaLabel: "Water",
-        title: `Drink ${result.portions.waterCups} Glasses`,
-        description: "~250ml per glass. Stay hydrated!",
-      },
-    ]
+        {
+          icon: "🥩",
+          ariaLabel: "Protein",
+          title: `Eat ${result.portions.proteinPortions} Palms of Protein`,
+          description: `~${PORTION_SIZES.PROTEIN_PER_PALM}g each (Chicken breast, Tofu block)`,
+        },
+        {
+          icon: "🍚",
+          ariaLabel: "Carbs",
+          title: `Eat ${result.portions.carbPortions} Fists of Carbs`,
+          description: `~${PORTION_SIZES.CARBS_PER_FIST}g each (Rice, Potato, Oats)`,
+        },
+        {
+          icon: "🥑",
+          ariaLabel: "Fats",
+          title: `Limit to ${result.portions.fatPortions} Thumbs of Fat`,
+          description: `~${PORTION_SIZES.FAT_PER_THUMB}g each (Oils, Nuts, Butter)`,
+        },
+        {
+          icon: "🥬",
+          ariaLabel: "Vegetables",
+          title: "Eat 5+ Vegetable Servings",
+          description: "80g is one serving (1 handful)",
+        },
+        {
+          icon: "💧",
+          ariaLabel: "Water",
+          title: `Drink ${result.portions.waterCups} Glasses`,
+          description: "~250ml per glass. Stay hydrated!",
+        },
+      ]
     : [];
 
-  // Combine base missions + any goal-specific bonus missions
   const allMissions = [...baseMissions, ...extraMissions];
 
-  // ── JSX (THE UI) ──────────────────────────────────────────────────────
-  // Everything below describes what the component looks like.
-  // React converts this JSX into actual DOM elements.
   return (
     <div className="glass-card animate-fade">
       <h2 className="text-gradient">Personal Nutrition Calculator</h2>
@@ -224,13 +248,6 @@ export default function Calculator() {
         Enter your data for a personalized nutrition plan based on 2020-2025 guidelines.
       </p>
 
-      {/*
-        THE FORM
-        - `onSubmit={handleSubmit}` connects the handler to the form's submit event
-        - Each field uses `name` attribute so FormData can read values
-        - `defaultValue` sets the initial value without React controlling every keystroke
-          (called an "uncontrolled" form)
-      */}
       <form onSubmit={handleSubmit} className="grid-form">
         <div className="form-group">
           <label htmlFor="sex">Sex</label>
@@ -285,56 +302,48 @@ export default function Calculator() {
         </div>
       </form>
 
-      {/*
-        CONDITIONAL RENDERING:
-        {result && (...)} means: "only render this block if `result` is not null".
-        This replaces the old pattern of toggling a .hidden CSS class.
-        When `result` is null, React simply doesn't render any of this.
-        When the user submits the form, setResult() is called, result becomes
-        non-null, and React renders the entire results section.
-      */}
       {result && (
         <div id="results" className="results-container" role="region" aria-label="Calculation results" aria-live="polite">
-          {/* ── Result Tiles ── */}
-          {/*
-            STAGGERED ANIMATION:
-            Each tile gets a CSS class "stagger-in" plus an increasing animationDelay.
-            Tile 1 appears at 0s, tile 2 at 0.08s, tile 3 at 0.16s, etc.
-            This creates a smooth cascade effect without any JS animation library.
-          */}
-          <div className="results-grid">
-            <ResultTile label="Daily kcal" value={result.nutrition.targetKcal} delay={0} />
-            <ResultTile label="Proteins" value={result.nutrition.proteinGrams} unit="grams" delay={1} />
-            <ResultTile label="Carbs" value={result.nutrition.carbGrams} unit="grams" delay={2} />
-            <ResultTile label="Fats" value={result.nutrition.fatGrams} unit="grams" delay={3} />
-            <ResultTile label="Saturated Fat" value={result.nutrition.saturatedFatGrams} unit="grams, maximum" delay={4} />
+          {/* ── Section Title ── */}
+          <h3 className="results-heading stagger-in">Your Personalized Plan</h3>
+
+          {/* ── Hero row: big kcal number + BMI ── */}
+          <div className="results-hero-row">
+            <KcalHero kcal={result.nutrition.targetKcal} delay={1} />
+            <BmiCard bmi={result.bmi} delay={2} />
           </div>
+
+          {/* ── Macro breakdown ── */}
+          <div className="macro-grid">
+            <MacroTile label="Protein" value={result.nutrition.proteinGrams} unit="daily target" accent="var(--secondary)" delay={3} />
+            <MacroTile label="Carbs" value={result.nutrition.carbGrams} unit="daily target" accent="var(--primary)" delay={4} />
+            <MacroTile label="Fats" value={result.nutrition.fatGrams} unit="daily target" accent="var(--accent)" delay={5} />
+            <MacroTile label="Saturated Fat" value={result.nutrition.saturatedFatGrams} unit="maximum" accent="var(--error)" delay={6} />
+          </div>
+
+          {/* ── Goal-Specific Info ── */}
+          {goalInfo && (
+            <div className="additional-info stagger-in" style={{ animationDelay: "0.4s" }}>
+              <strong>{goalInfo.label}:</strong> {goalInfo.text}
+            </div>
+          )}
 
           {/* ── Daily Missions ── */}
           <div className="missions-container">
             <h3 className="mission-title">
-              <span role="img" aria-label="Target">🎯</span> Your Daily Missions
+              <span role="img" aria-label="Target">
+                🎯
+              </span>{" "}
+              Your Daily Missions
             </h3>
             <div className="mission-list">
-              {/*
-                LIST RENDERING with .map():
-                For each mission in the array, render a MissionCard component.
-                The `key` prop is required — it helps React identify which items
-                have changed, been added, or removed. Use a stable unique value.
-
-                The spread syntax {...mission} passes all mission properties as
-                individual props. It's shorthand for:
-                icon={mission.icon} ariaLabel={mission.ariaLabel} title={mission.title} ...
-              */}
               {allMissions.map((mission, index) => (
                 <MissionCard
                   key={mission.title}
                   {...mission}
                   delay={index}
                   style={
-                    mission.ariaLabel === "Oily fish"
-                      ? { borderColor: "var(--accent)" }
-                      : undefined
+                    mission.ariaLabel === "Oily fish" ? { borderColor: "var(--accent)" } : undefined
                   }
                 />
               ))}
@@ -375,13 +384,6 @@ export default function Calculator() {
               />
             </div>
           </div>
-
-          {/* ── Goal-Specific Info ── */}
-          {goalInfo && (
-            <div className="additional-info stagger-in" style={{ animationDelay: "0.4s" }}>
-              <strong>{goalInfo.label}:</strong> {goalInfo.text}
-            </div>
-          )}
         </div>
       )}
     </div>

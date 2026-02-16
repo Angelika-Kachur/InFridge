@@ -1,19 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <!-- Rounded background for visibility at 16x16 -->
+  <rect width="128" height="128" rx="28" fill="#4f46e5"/>
   <!-- Fridge body -->
-  <rect x="28" y="8" width="72" height="112" rx="10" stroke="currentColor" stroke-width="6" fill="none"/>
+  <rect x="32" y="12" width="64" height="104" rx="8" stroke="white" stroke-width="5" fill="none"/>
   <!-- Divider line -->
-  <line x1="28" y1="48" x2="100" y2="48" stroke="currentColor" stroke-width="4"/>
+  <line x1="32" y1="48" x2="96" y2="48" stroke="white" stroke-width="3.5"/>
   <!-- Top handle -->
-  <line x1="82" y1="28" x2="82" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+  <line x1="80" y1="28" x2="80" y2="40" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
   <!-- Bottom handle -->
-  <line x1="82" y1="60" x2="82" y2="80" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-  <!-- Small item in top compartment (apple) -->
-  <circle cx="52" cy="30" r="6" fill="currentColor" opacity="0.3"/>
-  <!-- Small items in bottom compartment -->
-  <circle cx="48" cy="70" r="5" fill="currentColor" opacity="0.3"/>
-  <circle cx="62" cy="74" r="5" fill="currentColor" opacity="0.3"/>
-  <style>
-    svg { color: #4f46e5; }
-    @media (prefers-color-scheme: dark) { svg { color: #818cf8; } }
-  </style>
+  <line x1="80" y1="60" x2="80" y2="78" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- Items inside (brighter for visibility) -->
+  <circle cx="52" cy="30" r="5" fill="white" opacity="0.5"/>
+  <circle cx="50" cy="70" r="4.5" fill="white" opacity="0.5"/>
+  <circle cx="63" cy="73" r="4.5" fill="white" opacity="0.5"/>
 </svg>
