@@ -34,8 +34,11 @@ function KcalHero({ kcal, delay = 0 }: { kcal: number; delay?: number }) {
   );
 }
 
-/** BMI display card with colored indicator. */
+/** Compact BMI display for the hero row. */
 function BmiCard({ bmi, delay = 0 }: { bmi: BmiResult; delay?: number }) {
+  // Position the marker on the scale (BMI 15-40 maps to 0-100%)
+  const markerPos = Math.min(100, Math.max(0, ((bmi.value - 15) / 25) * 100));
+
   return (
     <div className="bmi-card stagger-in" style={{ animationDelay: `${delay * 0.08}s` }}>
       <div className="bmi-card__header">
@@ -47,16 +50,17 @@ function BmiCard({ bmi, delay = 0 }: { bmi: BmiResult; delay?: number }) {
       <span className="bmi-card__category" style={{ color: bmi.color }}>
         {bmi.category}
       </span>
-      {/* Visual BMI scale bar */}
+      {/* Multi-color BMI scale with position marker */}
       <div className="bmi-scale">
-        <div className="bmi-scale__track">
+        <div className="bmi-scale__bar">
+          <div className="bmi-scale__segment bmi-scale__under" />
+          <div className="bmi-scale__segment bmi-scale__normal" />
+          <div className="bmi-scale__segment bmi-scale__over" />
+          <div className="bmi-scale__segment bmi-scale__obese" />
           <div
-            className="bmi-scale__fill"
-            style={{
-              // Map BMI 15-40 to 0-100%
-              width: `${Math.min(100, Math.max(0, ((bmi.value - 15) / 25) * 100))}%`,
-              background: bmi.color,
-            }}
+            className="bmi-scale__marker"
+            style={{ left: `${markerPos}%` }}
+            aria-label={`Your BMI: ${bmi.value}`}
           />
         </div>
         <div className="bmi-scale__labels">
@@ -66,6 +70,153 @@ function BmiCard({ bmi, delay = 0 }: { bmi: BmiResult; delay?: number }) {
           <span>30</span>
           <span>40</span>
         </div>
+      </div>
+      <p className="bmi-card__ideal">
+        Ideal weight for your height: <strong>{bmi.idealRange.min} - {bmi.idealRange.max} kg</strong>
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Full BMI detail panel — educational breakdown with weight scale and risks.
+ * Shows where the user falls, what each category means, and weight targets.
+ */
+function BmiDetailPanel({ bmi, currentWeight }: { bmi: BmiResult; currentWeight: number }) {
+  const [open, setOpen] = useState(false);
+  const { thresholds } = bmi;
+
+  // Calculate difference from ideal range
+  const diff = bmi.value < 18.5
+    ? thresholds.underweight - currentWeight
+    : bmi.value >= 25
+      ? currentWeight - thresholds.normalEnd
+      : 0;
+  const diffRounded = Math.round(diff * 10) / 10;
+
+  // Category data for the scale
+  const categories = [
+    {
+      label: "Underweight",
+      range: `< ${thresholds.underweight} kg`,
+      bmiRange: "< 18.5",
+      color: "var(--accent)",
+      active: bmi.value < 18.5,
+      risks: "Weakened immune system, nutrient deficiencies, bone density loss, fertility issues, muscle wasting.",
+    },
+    {
+      label: "Normal",
+      range: `${thresholds.underweight} - ${thresholds.normalEnd} kg`,
+      bmiRange: "18.5 - 24.9",
+      color: "var(--secondary)",
+      active: bmi.value >= 18.5 && bmi.value < 25,
+      risks: "",
+    },
+    {
+      label: "Overweight",
+      range: `${Math.round(thresholds.normalEnd + 0.1)} - ${thresholds.overweightEnd} kg`,
+      bmiRange: "25 - 29.9",
+      color: "var(--accent)",
+      active: bmi.value >= 25 && bmi.value < 30,
+      risks: "Increased risk of type 2 diabetes, high blood pressure, sleep apnea, joint strain, and elevated LDL cholesterol.",
+    },
+    {
+      label: "Obese",
+      range: `> ${thresholds.obeseStart} kg`,
+      bmiRange: "30+",
+      color: "var(--error)",
+      active: bmi.value >= 30,
+      risks: "Significantly higher risk of heart disease, stroke, type 2 diabetes, certain cancers, fatty liver disease, and reduced life expectancy.",
+    },
+  ];
+
+  return (
+    <div className="bmi-detail stagger-in" style={{ animationDelay: "0.35s" }}>
+      {/* Toggle header — always visible */}
+      <button
+        type="button"
+        className="bmi-detail__toggle"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+      >
+        <span>Understanding Your BMI</span>
+        <svg
+          className={`bmi-detail__chevron ${open ? "bmi-detail__chevron--open" : ""}`}
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {/* Collapsible body */}
+      <div className={`bmi-detail__body ${open ? "bmi-detail__body--open" : ""}`}>
+        <p className="bmi-detail__intro">
+          BMI (Body Mass Index) is a screening tool that estimates body fat based on your weight and height.
+          It doesn't measure body fat directly — muscular people may score higher without health risk.
+          Use it as a general guide alongside other health markers.
+        </p>
+
+        {/* Weight recommendation */}
+        {bmi.category === "Normal weight" ? (
+          <div className="bmi-detail__recommendation bmi-detail__recommendation--good">
+            <strong>You're in the healthy range.</strong> Your weight of {currentWeight} kg
+            falls within the ideal BMI range for your height.
+            Maintain this with balanced nutrition and regular activity.
+          </div>
+        ) : (
+          <div className="bmi-detail__recommendation bmi-detail__recommendation--action">
+            <strong>
+              {bmi.value < 18.5
+                ? `You are ${diffRounded} kg below the healthy range.`
+                : `You are ${diffRounded} kg above the healthy range.`}
+            </strong>{" "}
+            Your ideal weight range is{" "}
+            <strong>{bmi.idealRange.min} - {bmi.idealRange.max} kg</strong> for your height.
+            {bmi.value < 18.5
+              ? " Focus on nutrient-dense foods and gradual, healthy weight gain."
+              : " A gradual loss of 0.5-1 kg per week through diet and exercise is considered safe."}
+          </div>
+        )}
+
+        {/* Category scale with weights */}
+        <div className="bmi-detail__scale">
+          {categories.map((cat) => (
+            <div
+              key={cat.label}
+              className={`bmi-detail__cat ${cat.active ? "bmi-detail__cat--active" : ""}`}
+              style={{ borderLeftColor: cat.color }}
+            >
+              <div className="bmi-detail__cat-header">
+                <span className="bmi-detail__cat-name" style={cat.active ? { color: cat.color } : undefined}>
+                  {cat.label}
+                  {cat.active && " (You)"}
+                </span>
+                <span className="bmi-detail__cat-bmi">BMI {cat.bmiRange}</span>
+              </div>
+              <span className="bmi-detail__cat-weight">{cat.range}</span>
+              {cat.risks && (
+                <p className="bmi-detail__cat-risks">
+                  <strong>Risks:</strong> {cat.risks}
+                </p>
+              )}
+              {cat.label === "Normal" && (
+                <p className="bmi-detail__cat-risks" style={{ color: "var(--secondary)" }}>
+                  Lowest risk of chronic disease. Best range for longevity, energy, and metabolic health.
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <p className="bmi-detail__note">
+          BMI has limitations: it does not distinguish between muscle and fat mass,
+          and may be less accurate for athletes, elderly individuals, or certain ethnic groups.
+          Always consult a healthcare provider for a complete health assessment.
+        </p>
       </div>
     </div>
   );
@@ -174,6 +325,7 @@ export default function Calculator() {
     portions: PortionResult;
     bmi: BmiResult;
     goal: Goal;
+    weight: number;
   } | null>(null);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -191,7 +343,7 @@ export default function Calculator() {
     const portions = calculatePortions(nutrition, weight);
     const bmi = calculateBMI(weight, height);
 
-    setResult({ nutrition, portions, bmi, goal });
+    setResult({ nutrition, portions, bmi, goal, weight });
 
     setTimeout(() => {
       document.getElementById("results")?.scrollIntoView({
@@ -312,6 +464,9 @@ export default function Calculator() {
             <KcalHero kcal={result.nutrition.targetKcal} delay={1} />
             <BmiCard bmi={result.bmi} delay={2} />
           </div>
+
+          {/* ── BMI Detail Panel ── */}
+          <BmiDetailPanel bmi={result.bmi} currentWeight={result.weight} />
 
           {/* ── Macro breakdown ── */}
           <div className="macro-grid">

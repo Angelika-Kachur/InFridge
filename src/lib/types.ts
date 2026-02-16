@@ -57,7 +57,16 @@ export interface FoodItem {
 export interface BmiResult {
   value: number;         // e.g. 24.5
   category: string;      // e.g. "Normal weight"
-  color: string;         // CSS variable name for visual indicator
+  color: string;         // CSS color for visual indicator
+  /** Weight in kg at each BMI boundary for the user's height */
+  thresholds: {
+    underweight: number; // BMI 18.5
+    normalEnd: number;   // BMI 24.9
+    overweightEnd: number; // BMI 29.9
+    obeseStart: number;  // BMI 30
+  };
+  /** The ideal weight range (BMI 18.5–24.9) in kg */
+  idealRange: { min: number; max: number };
 }
 
 export interface GoalInfo {

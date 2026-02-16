@@ -82,12 +82,25 @@ export function calculatePortions(
  */
 export function calculateBMI(weightKg: number, heightCm: number): BmiResult {
   const heightM = heightCm / 100;
-  const value = Math.round((weightKg / (heightM * heightM)) * 10) / 10;
+  const heightSq = heightM * heightM;
+  const value = Math.round((weightKg / heightSq) * 10) / 10;
 
-  if (value < 18.5) return { value, category: "Underweight", color: "var(--accent)" };
-  if (value < 25) return { value, category: "Normal weight", color: "var(--secondary)" };
-  if (value < 30) return { value, category: "Overweight", color: "var(--accent)" };
-  return { value, category: "Obese", color: "var(--error)" };
+  // Calculate weight at each BMI boundary for this person's height
+  const round1 = (n: number) => Math.round(n * 10) / 10;
+  const thresholds = {
+    underweight: round1(18.5 * heightSq),  // start of normal
+    normalEnd: round1(24.9 * heightSq),    // end of normal
+    overweightEnd: round1(29.9 * heightSq), // end of overweight
+    obeseStart: round1(30 * heightSq),      // start of obese
+  };
+  const idealRange = { min: thresholds.underweight, max: thresholds.normalEnd };
+
+  const base = { value, thresholds, idealRange };
+
+  if (value < 18.5) return { ...base, category: "Underweight", color: "var(--accent)" };
+  if (value < 25) return { ...base, category: "Normal weight", color: "var(--secondary)" };
+  if (value < 30) return { ...base, category: "Overweight", color: "var(--accent)" };
+  return { ...base, category: "Obese", color: "var(--error)" };
 }
 
 /**
