@@ -96,9 +96,9 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 						fill="currentColor"
 						opacity="0.3"></circle>
 				</svg>
-				<span class="logo-text"
+				<h1 class="logo-text"
 					>In<span class="text-gradient">Fridge</span>
-				</span>
+				</h1>
 			</a>
 
 			<button
@@ -331,6 +331,13 @@ const currentPath = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
 				width: 32px;
 				height: 32px;
 				color: var(--primary);
+			}
+
+			h1.logo-text {
+				margin: 0;
+				font-size: inherit;
+				font-weight: inherit;
+				line-height: inherit;
 			}
 
 			.logo-text {
